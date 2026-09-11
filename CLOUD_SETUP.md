@@ -14,15 +14,18 @@ Render's free API sleeps after 15 minutes without requests and typically needs a
 
 For business-critical availability, use paid hosting and independently verified backups. This free setup is a way to start with a small owner ledger; it is not a lifetime availability guarantee.
 
-## Deployment prepared on 11 September 2026
+## Deployment status on 11 September 2026
 
 - The **Free** API service has been created in the **Robustthreed** Render workspace, in Singapore, and connected to this repository's `main` branch.
 - [Open the existing API service in Render](https://dashboard.render.com/web/srv-dahpu83m8hqs73ctcvig). Its public address is `https://robustthreed-ledger-api.onrender.com`.
 - The **Free MySQL 8.4** service `robustthreed-ledger` is running in the Aiven project of the same name. The database `robustthreed_ledger` has already been created inside it.
-- The Aiven database connection settings and owner login password still need to be supplied. The service cannot start until those values are set; its initial deployment may show a database setup failure while they are missing.
-- The GitHub Pages build already uses this API address. Pages publishing still needs to be enabled after the API is ready.
+- The API is **live**, with the MySQL connection, TLS certificate verification, and owner login configured in Render. Its [health check](https://robustthreed-ledger-api.onrender.com/api/health) returns `{"ok":true}`.
+- Your generated owner login password is stored in **Render → Environment → `LEDGER_PASSWORD`**. Copy it privately from there when signing in to the ledger.
+- The GitHub Pages build already uses this API address. **Only Pages publishing remains:** follow section 3 below. No repository variables are required for this deployment.
 
 Continue with the steps below using the existing Aiven and Render services. You do not need to create another database service or API service.
+
+**For the existing deployment, sections 1 and 2 are complete.** They remain below as configuration and recovery instructions.
 
 ## 1. Open the existing MySQL service
 
@@ -62,16 +65,11 @@ The supplied password stays in Render's server environment. The API derives a sc
 ## 3. Connect GitHub Pages
 
 1. Open the repository's [Pages settings](https://github.com/vedamrit01/ROBUSTTHREED_LEDGER/settings/pages). Choose **GitHub Actions** as the publishing source.
-2. Open **Settings → Secrets and variables → Actions → Variables**. Create or update these repository variables:
+2. Open **Actions → Deploy GitHub Pages → Run workflow**, select `main`, and run it. If an earlier run failed because Pages was disabled, you can instead re-run its failed deployment job after completing step 1.
+3. When build and deploy both succeed, open [your ledger](https://vedamrit01.github.io/ROBUSTTHREED_LEDGER/).
+4. Sign in with the generated password stored in **Render → Environment → `LEDGER_PASSWORD`**. Save a small test entry, reload the page, and confirm it remains; then delete the test entry.
 
-   | Variable | Value |
-   | --- | --- |
-   | `VITE_API_URL` | Optional for the existing service: the workflow defaults to `https://robustthreed-ledger-api.onrender.com`. Set this only to use a different API address, without `/api`, `/api/health`, or a trailing slash. |
-   | `ENABLE_PAGES_DEPLOY` | `true` |
-
-3. Open **Actions → Deploy GitHub Pages → Run workflow**, select `main`, and run it.
-4. When build and deploy both succeed, open [your ledger](https://vedamrit01.github.io/ROBUSTTHREED_LEDGER/).
-5. Sign in using the `LEDGER_PASSWORD` you entered in Render. Save a small test entry, reload the page, and confirm it remains; then delete the test entry.
+The workflow publishes on pushes to `main` and on manual runs. The former `ENABLE_PAGES_DEPLOY` variable is no longer needed. Only if you move the API to another host, set `VITE_API_URL` under **Settings → Secrets and variables → Actions → Variables** to the new HTTPS address, without `/api` or a trailing slash, and run the workflow again.
 
 Only the API's public address goes in a `VITE_` variable. All database credentials belong in Render's environment settings. [GitHub Actions publishing setup](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
 

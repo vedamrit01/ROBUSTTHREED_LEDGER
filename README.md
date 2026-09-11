@@ -6,9 +6,9 @@ A private daily ledger for Robustthreed's Amazon, Flipkart, Meesho, and direct s
 
 **Want to use cloud MySQL without running your computer?** Follow [CLOUD_SETUP.md](CLOUD_SETUP.md) for Aiven's free MySQL, a prepared Render API deployment, and GitHub Pages. This route lets you enter database details and choose your owner password through dashboards; no local MySQL installation is needed.
 
-[Open the existing Render API service](https://dashboard.render.com/web/srv-dahpu83m8hqs73ctcvig). The Free service was created on 11 September 2026; database credentials and an owner login password still need to be configured before it can run. See [the remaining cloud setup steps](CLOUD_SETUP.md).
+[Open the existing Render API service](https://dashboard.render.com/web/srv-dahpu83m8hqs73ctcvig). The Free API is live and connected to MySQL; its [health check](https://robustthreed-ledger-api.onrender.com/api/health) is passing. Your generated owner login password is stored in **Render → Environment → `LEDGER_PASSWORD`**. See [the remaining GitHub Pages steps](CLOUD_SETUP.md#3-connect-github-pages).
 
-The free Aiven MySQL service `robustthreed-ledger` is running, and its database `robustthreed_ledger` has been created. Continue by configuring the existing Render service; no additional database service is needed.
+The free Aiven MySQL service `robustthreed-ledger` is running, and its database `robustthreed_ledger` is connected to the API. Continue by enabling GitHub Pages; no additional database service is needed.
 
 The database setup command must run on a computer that can reach your MySQL server. `localhost` means the computer running the API. The MySQL credentials from your screenshot belong in your own server's `.env`; this repository contains placeholders.
 
@@ -147,18 +147,11 @@ Then update the server's `DB_USER` and `DB_PASSWORD` and restart it. For a hoste
 The repository contains `.github/workflows/pages.yml`. It builds only the frontend into `dist`; the server, database, and secrets are not part of that published folder.
 
 1. Open this repository's **Settings → Pages**. Under **Build and deployment**, select **GitHub Actions** as the source.
-2. Open **Settings → Secrets and variables → Actions → Variables**. Add these **repository variables**:
+2. Open **Actions → Deploy GitHub Pages → Run workflow**, choose `main`, and run it.
+3. After the deployment succeeds, open [Robustthreed on GitHub Pages](https://vedamrit01.github.io/ROBUSTTHREED_LEDGER/).
+4. Sign in with your owner password, save an entry, reload, and confirm it is still there.
 
-   | Variable | Value |
-   | --- | --- |
-   | `VITE_API_URL` | Optional: defaults to `https://robustthreed-ledger-api.onrender.com`. Set it to a different HTTPS API origin only if you change hosts, without `/api` or a trailing slash. |
-   | `ENABLE_PAGES_DEPLOY` | `true` |
-
-3. Open **Actions → Deploy GitHub Pages → Run workflow**, choose `main`, and run it.
-4. After the deployment succeeds, open [Robustthreed on GitHub Pages](https://vedamrit01.github.io/ROBUSTTHREED_LEDGER/).
-5. Sign in with your owner password, save an entry, reload, and confirm it is still there.
-
-The workflow sets Vite's base path to `/ROBUSTTHREED_LEDGER/` and uses the existing Render API address unless `VITE_API_URL` overrides it. Complete the API/database setup before publishing. Deployment stays disabled until `ENABLE_PAGES_DEPLOY=true`; subsequent pushes to `main` deploy automatically. Changing a frontend variable requires running the workflow again. [Vite's GitHub Pages guide](https://vite.dev/guide/static-deploy.html#github-pages).
+The workflow sets Vite's base path to `/ROBUSTTHREED_LEDGER/` and uses the existing Render API address. No repository variables are needed for this deployment. Pushes to `main` and manual workflow runs publish the site once Pages is enabled. If you change API hosts, set the optional `VITE_API_URL` repository variable to the new HTTPS origin, without `/api` or a trailing slash, and run the workflow again. [Vite's GitHub Pages guide](https://vite.dev/guide/static-deploy.html#github-pages).
 
 `VITE_` variables are public and are compiled into the website. Put only the API's public URL there. Database credentials, the owner password hash, and ledger records belong on the API server and in MySQL.
 
@@ -205,7 +198,7 @@ To run MySQL integration checks yourself, use a separate database whose name end
 | Cannot reach the ledger server | Check API HTTPS availability, `/api/health`, and `ALLOWED_ORIGINS`. |
 | Browser reports CORS errors | `ALLOWED_ORIGINS` must be `https://vedamrit01.github.io`, without `/ROBUSTTHREED_LEDGER/`. |
 | Login is temporarily blocked | Wait 15 minutes; check proxy settings if multiple clients share the same detected IP. |
-| Pages deploy job is skipped | Set `ENABLE_PAGES_DEPLOY` to `true` and choose GitHub Actions in Pages settings. |
+| Pages deployment says the site is not found or is disabled | Choose GitHub Actions as the source in Pages settings, then re-run the workflow or failed deployment job. |
 | Styling/assets missing after hosting | Use the included Pages workflow, which sets the repository base path. |
 | An edit reports a conflict | Another save changed the record. Close the form, refresh, and edit the current record. |
 

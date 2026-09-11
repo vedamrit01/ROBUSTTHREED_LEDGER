@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: github-pages
+  group: pages
   cancel-in-progress: false
 jobs:
   build:
@@ -27,7 +27,6 @@ jobs:
         with:
           path: dist
   deploy:
-    if: ${{ vars.ENABLE_PAGES_DEPLOY == 'true' }}
     needs: build
     runs-on: ubuntu-latest
     permissions:
