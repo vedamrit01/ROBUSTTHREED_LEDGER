@@ -1,10 +1,10 @@
 import { createApp } from "./app.mjs";
-import { serverConfig } from "./config.mjs";
+import { resolveServerConfig } from "./config.mjs";
 import { createPool, mysqlStore } from "./store.mjs";
 
 let pool;
 try {
-  const config = serverConfig();
+  const config = await resolveServerConfig();
   pool = createPool();
   const store = mysqlStore(pool);
   await store.health();
@@ -19,7 +19,7 @@ try {
   });
 } catch (e) {
   const code = /^[A-Z0-9_]+$/.test(e.code || "") ? ` (${e.code})` : "";
-  console.error(`API startup failed${code}. Check the server .env, run npm run password:set, and run npm run db:setup. MySQL must be reachable from this server.`);
+  console.error(`API startup failed${code}. Check the server's MySQL and owner-login settings. For local setup, run npm run password:set and npm run db:setup. For cloud setup, follow CLOUD_SETUP.md. MySQL must be reachable from this server.`);
   if (pool) await pool.end();
   process.exitCode = 1;
 }

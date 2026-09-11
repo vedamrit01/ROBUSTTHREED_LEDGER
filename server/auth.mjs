@@ -3,8 +3,7 @@ import { promisify } from "node:util";
 const scrypt = promisify(scryptCallback);
 const options = { N: 32768, r: 8, p: 1, maxmem: 64 * 1024 * 1024 };
 export const digest = value => createHash("sha256").update(value).digest("hex");
-export async function hashPassword(password) {
-  const salt = randomBytes(16).toString("base64url");
+export async function hashPassword(password, salt = randomBytes(16).toString("base64url")) {
   const hash = await scrypt(password, salt, 64, options);
   return `scrypt:${salt}:${hash.toString("base64url")}`;
 }

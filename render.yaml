@@ -1,0 +1,43 @@
+# Deploys only the Node API. Create the free MySQL service separately on Aiven.
+# Credentials are entered in Render's dashboard and never stored in this file.
+services:
+  - type: web
+    name: robustthreed-ledger-api
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    buildCommand: npm ci --omit=dev
+    # Free Render services have no pre-deploy jobs or shell access.
+    # The idempotent setup creates the ledger database/tables before API startup.
+    startCommand: npm run db:setup && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: '24'
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: ALLOWED_ORIGINS
+        value: https://vedamrit01.github.io
+      - key: TRUST_PROXY_HOPS
+        value: '0'
+      - key: DB_NAME
+        value: robustthreed_ledger
+      - key: DB_SSL
+        value: 'true'
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_SSL_CA_PEM
+        sync: false
+      - key: LEDGER_PASSWORD
+        sync: false
+      - key: LEDGER_AUTH_SALT
+        generateValue: true

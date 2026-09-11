@@ -4,6 +4,10 @@ A private daily ledger for Robustthreed's Amazon, Flipkart, Meesho, and direct s
 
 **Frontend:** React + Vite, ready for GitHub Pages. **Backend:** Node.js + Express. **Database:** MySQL, with a new database named `robustthreed_ledger` by default.
 
+**Want to use cloud MySQL without running your computer?** Follow [CLOUD_SETUP.md](CLOUD_SETUP.md) for Aiven's free MySQL, a prepared Render API deployment, and GitHub Pages. This route lets you enter database details and choose your owner password through dashboards; no local MySQL installation is needed.
+
+[Deploy the API to Render](https://render.com/deploy?repo=https://github.com/vedamrit01/ROBUSTTHREED_LEDGER)
+
 The database setup command must run on a computer that can reach your MySQL server. `localhost` means the computer running the API. The MySQL credentials from your screenshot belong in your own server's `.env`; this repository contains placeholders.
 
 ## What the app does
@@ -113,6 +117,7 @@ You need either a server running both Node and MySQL, or a Node hosting service 
 | `DB_USER`, `DB_PASSWORD`, `DB_NAME` | Database connection settings |
 | `DB_SSL` | `true` for a remote database requiring TLS |
 | `DB_SSL_CA` | Optional local path to your provider's CA certificate |
+| `DB_SSL_CA_PEM` | Alternative to a file: paste your provider's complete PEM CA certificate |
 | `LEDGER_PASSWORD_HASH` | Copy the generated value from your private `.env` into the API host's environment settings |
 | `ALLOWED_ORIGINS` | `https://vedamrit01.github.io` — no repository path or trailing slash |
 | `NODE_ENV` | `production` |
@@ -121,6 +126,8 @@ You need either a server running both Node and MySQL, or a Node hosting service 
 | `TRUST_PROXY_HOPS` | `0` by default; use your host's documented proxy count, usually `1` only when there is exactly one trusted proxy |
 
 The API's runtime database account needs `SELECT`, `INSERT`, `UPDATE`, and `DELETE` on this ledger database. Use a separate administrative account for setup. Do not use a public MySQL root account for the running web API. TLS certificate verification stays enabled.
+
+The cloud Blueprint also supports `LEDGER_PASSWORD` plus a generated `LEDGER_AUTH_SALT` instead of a locally generated password hash. Its automatic database setup runs before each API start and therefore requires creation privileges. See [the cloud guide](CLOUD_SETUP.md) for that route; the restricted runtime account instructions below apply when you run setup separately.
 
 For a database on the same server, an administrator can create a restricted account after setup using the following SQL. Replace the placeholder password locally:
 

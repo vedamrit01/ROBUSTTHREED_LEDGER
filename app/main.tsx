@@ -27,7 +27,7 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
       <div><label htmlFor="ledger-password" className="form-label">Owner password</label><Input id="ledger-password" autoFocus type="password" autoComplete="current-password" required maxLength={256} value={password} onChange={e => setPassword(e.target.value)} disabled={busy} placeholder="Enter your ledger password" /></div>
       {error && <p className="login-error" role="alert">{error}</p>}
       <Button type="submit" className="w-full" disabled={busy}>{busy ? <Loader2 size={17} className="animate-spin" /> : <LockKeyhole size={16} />}Open my ledger</Button>
-      <p className="login-footnote">Use the owner password you created during setup.</p>
+      <p className="login-footnote" aria-live="polite">{busy ? "The first connection can take about a minute. Please keep this page open." : "Use the owner password you created during setup."}</p>
     </>}
   </form>;
 }

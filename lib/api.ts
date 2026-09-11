@@ -14,7 +14,8 @@ export async function api<T>(path: string, options?: RequestInit): Promise<T> {
   let r: Response;
   try {
     r = await fetch(apiOrigin + path, {
-      ...options, cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(20000),
+      // Free API hosts can need about a minute to wake after idling.
+      ...options, cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(90000),
       headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}), ...options?.headers },
     });
   } catch {
