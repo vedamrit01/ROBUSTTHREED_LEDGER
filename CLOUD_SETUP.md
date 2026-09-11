@@ -14,6 +14,15 @@ Render's free API sleeps after 15 minutes without requests and typically needs a
 
 For business-critical availability, use paid hosting and independently verified backups. This free setup is a way to start with a small owner ledger; it is not a lifetime availability guarantee.
 
+## Deployment prepared on 11 September 2026
+
+- The **Free** API service has been created in the **Robustthreed** Render workspace, in Singapore, and connected to this repository's `main` branch.
+- [Open the existing API service in Render](https://dashboard.render.com/web/srv-dahpu83m8hqs73ctcvig). Its public address is `https://robustthreed-ledger-api.onrender.com`.
+- The Aiven database connection settings and owner login password still need to be supplied. The service cannot start until those values are set; its initial deployment may show a database setup failure while they are missing.
+- The GitHub Pages build already uses this API address. Pages publishing still needs to be enabled after the API is ready.
+
+Continue with the steps below using the existing Render service. You do not need to create a second API service.
+
 ## 1. Create the free MySQL service
 
 1. Sign up or sign in at [Aiven](https://console.aiven.io/).
@@ -25,13 +34,10 @@ For business-critical availability, use paid hosting and independently verified 
 
 The cloud username is commonly `avnadmin`; use the value Aiven actually supplies. Your computer's `root` credentials are not credentials for this new cloud service. The API setup creates a database named `robustthreed_ledger` inside the service. [Aiven service setup](https://aiven.io/docs/products/mysql/get-started), [database creation](https://aiven.io/docs/products/mysql/howto/create-database).
 
-## 2. Deploy the API
+## 2. Connect the existing API to MySQL
 
-[**Deploy Robustthreed's API to Render**](https://render.com/deploy?repo=https://github.com/vedamrit01/ROBUSTTHREED_LEDGER)
-
-1. Open the link and sign in to Render. Connect GitHub if prompted, granting access to this repository.
-2. Render reads `render.yaml` from the project. Confirm the service is `robustthreed-ledger-api` on the **Free** plan.
-3. Fill in the requested values:
+1. Open [the existing Render API service](https://dashboard.render.com/web/srv-dahpu83m8hqs73ctcvig).
+2. Select **Environment → Edit** and add these six environment variables. Enter their values only in Render's private environment settings:
 
    | Render field | What to enter |
    | --- | --- |
@@ -42,14 +48,15 @@ The cloud username is commonly `avnadmin`; use the value Aiven actually supplies
    | `DB_SSL_CA_PEM` | Full contents of the CA certificate, including BEGIN/END CERTIFICATE lines |
    | `LEDGER_PASSWORD` | A new owner login password of 16–256 characters |
 
-4. Leave the other Blueprint settings as supplied. Render generates `LEDGER_AUTH_SALT` automatically; keep it unchanged between deployments.
-5. Create/deploy the service. Watch its logs until you see the database ready message and `Robustthreed API listening on port ...`.
-6. Copy the service's HTTPS address from Render, such as `https://robustthreed-ledger-api-xxxx.onrender.com`.
-7. Open that address with `/api/health` appended. A ready API returns `{"ok":true}`.
+3. Leave the existing settings unchanged, including `DB_NAME=robustthreed_ledger`, `DB_SSL=true`, and `ALLOWED_ORIGINS=https://vedamrit01.github.io`. A random `LEDGER_AUTH_SALT` is already stored in the service; keep it unchanged between deployments.
+4. Save the environment changes and deploy. Watch the logs until you see the database ready message and `Robustthreed API listening on port ...`.
+5. Open [the API health check](https://robustthreed-ledger-api.onrender.com/api/health). A ready API returns `{"ok":true}`. Do not enable Pages until this check passes.
 
-The Blueprint installs dependencies and runs `npm run db:setup` before starting the API. That setup creates the database and tables if needed and preserves existing records. It runs again on restarts, so its database account needs creation privileges as well as ledger read/write permissions. TLS verification remains enabled. No local terminal or password-hash command is required for this route.
+The service installs dependencies and runs `npm run db:setup` before starting the API. That setup creates the database and tables if needed and preserves existing records. It runs again on restarts, so its database account needs creation privileges as well as ledger read/write permissions. TLS verification remains enabled. No local terminal or password-hash command is required for this route.
 
 The supplied password stays in Render's server environment. The API derives a scrypt hash for verification; it does not send the password to GitHub Pages or save it in MySQL. [Render Blueprint secret prompts and generated values](https://render.com/docs/blueprint-spec#prompting-for-secret-values).
+
+**Only if you are creating a separate deployment:** [Deploy with the included Blueprint](https://render.com/deploy?repo=https://github.com/vedamrit01/ROBUSTTHREED_LEDGER). It selects the Free API plan, prompts for the same six values, and generates an authentication salt. Use the new API address as `VITE_API_URL` if it differs from the existing service.
 
 ## 3. Connect GitHub Pages
 
@@ -58,7 +65,7 @@ The supplied password stays in Render's server environment. The API derives a sc
 
    | Variable | Value |
    | --- | --- |
-   | `VITE_API_URL` | Your Render HTTPS address, without `/api`, `/api/health`, or a trailing slash |
+   | `VITE_API_URL` | Optional for the existing service: the workflow defaults to `https://robustthreed-ledger-api.onrender.com`. Set this only to use a different API address, without `/api`, `/api/health`, or a trailing slash. |
    | `ENABLE_PAGES_DEPLOY` | `true` |
 
 3. Open **Actions → Deploy GitHub Pages → Run workflow**, select `main`, and run it.
@@ -81,13 +88,13 @@ Only the API's public address goes in a `VITE_` variable. All database credentia
 
 | Symptom | Check |
 | --- | --- |
-| Render does not ask for the six fields | Use the Deploy link/Blueprint flow, or add the fields manually in the service's Environment settings. |
+| Render does not ask for the six fields | Open the existing service's Environment settings and add the six variables listed above. |
 | Database connection refused or timed out | Aiven is running; hostname and port match its dashboard; network rules allow Render. |
 | Access denied | Use Aiven's generated username and password, not your old localhost login. |
 | Certificate verification error | Paste the complete CA certificate into `DB_SSL_CA_PEM`; keep `DB_SSL=true`. |
 | Cannot create the database | Use the service administrator for initial setup, or create `robustthreed_ledger` with an authorized database administrator. |
 | Owner-login configuration error | `LEDGER_PASSWORD` needs at least 16 characters and the generated `LEDGER_AUTH_SALT` must be present. |
 | API is ready but the website cannot connect | Update `VITE_API_URL`, rebuild Pages, and keep `ALLOWED_ORIGINS=https://vedamrit01.github.io`. |
-| Blank/local `localhost` settings appear in your deployment | Use the included Blueprint so the six cloud fields are entered in Render. Do not upload your local `.env`. |
+| Blank/local `localhost` settings appear in your deployment | Enter Aiven's actual connection values in the existing Render service's Environment settings. Do not upload your local `.env`. |
 
 For the local setup and accounting rules, see [README.md](README.md).

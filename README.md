@@ -6,7 +6,7 @@ A private daily ledger for Robustthreed's Amazon, Flipkart, Meesho, and direct s
 
 **Want to use cloud MySQL without running your computer?** Follow [CLOUD_SETUP.md](CLOUD_SETUP.md) for Aiven's free MySQL, a prepared Render API deployment, and GitHub Pages. This route lets you enter database details and choose your owner password through dashboards; no local MySQL installation is needed.
 
-[Deploy the API to Render](https://render.com/deploy?repo=https://github.com/vedamrit01/ROBUSTTHREED_LEDGER)
+[Open the existing Render API service](https://dashboard.render.com/web/srv-dahpu83m8hqs73ctcvig). The Free service was created on 11 September 2026; database credentials and an owner login password still need to be configured before it can run. See [the remaining cloud setup steps](CLOUD_SETUP.md).
 
 The database setup command must run on a computer that can reach your MySQL server. `localhost` means the computer running the API. The MySQL credentials from your screenshot belong in your own server's `.env`; this repository contains placeholders.
 
@@ -149,14 +149,14 @@ The repository contains `.github/workflows/pages.yml`. It builds only the fronte
 
    | Variable | Value |
    | --- | --- |
-   | `VITE_API_URL` | Your HTTPS API origin, such as `https://your-api.example.com`, without `/api` or a trailing slash |
+   | `VITE_API_URL` | Optional: defaults to `https://robustthreed-ledger-api.onrender.com`. Set it to a different HTTPS API origin only if you change hosts, without `/api` or a trailing slash. |
    | `ENABLE_PAGES_DEPLOY` | `true` |
 
 3. Open **Actions → Deploy GitHub Pages → Run workflow**, choose `main`, and run it.
 4. After the deployment succeeds, open [Robustthreed on GitHub Pages](https://vedamrit01.github.io/ROBUSTTHREED_LEDGER/).
 5. Sign in with your owner password, save an entry, reload, and confirm it is still there.
 
-The workflow sets Vite's base path to `/ROBUSTTHREED_LEDGER/`. Without the API variable, the interface shows a setup message instead of accepting entries. Deployment stays disabled until `ENABLE_PAGES_DEPLOY=true`; subsequent pushes to `main` deploy automatically. Changing a frontend variable requires running the workflow again. [Vite's GitHub Pages guide](https://vite.dev/guide/static-deploy.html#github-pages).
+The workflow sets Vite's base path to `/ROBUSTTHREED_LEDGER/` and uses the existing Render API address unless `VITE_API_URL` overrides it. Complete the API/database setup before publishing. Deployment stays disabled until `ENABLE_PAGES_DEPLOY=true`; subsequent pushes to `main` deploy automatically. Changing a frontend variable requires running the workflow again. [Vite's GitHub Pages guide](https://vite.dev/guide/static-deploy.html#github-pages).
 
 `VITE_` variables are public and are compiled into the website. Put only the API's public URL there. Database credentials, the owner password hash, and ledger records belong on the API server and in MySQL.
 

@@ -22,7 +22,7 @@ jobs:
       - run: npm run build
         env:
           VITE_BASE_PATH: /ROBUSTTHREED_LEDGER/
-          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_API_URL: ${{ vars.VITE_API_URL || 'https://robustthreed-ledger-api.onrender.com' }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
