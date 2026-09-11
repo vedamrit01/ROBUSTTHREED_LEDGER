@@ -18,21 +18,22 @@ For business-critical availability, use paid hosting and independently verified 
 
 - The **Free** API service has been created in the **Robustthreed** Render workspace, in Singapore, and connected to this repository's `main` branch.
 - [Open the existing API service in Render](https://dashboard.render.com/web/srv-dahpu83m8hqs73ctcvig). Its public address is `https://robustthreed-ledger-api.onrender.com`.
+- The **Free MySQL 8.4** service `robustthreed-ledger` is running in the Aiven project of the same name. The database `robustthreed_ledger` has already been created inside it.
 - The Aiven database connection settings and owner login password still need to be supplied. The service cannot start until those values are set; its initial deployment may show a database setup failure while they are missing.
 - The GitHub Pages build already uses this API address. Pages publishing still needs to be enabled after the API is ready.
 
-Continue with the steps below using the existing Render service. You do not need to create a second API service.
+Continue with the steps below using the existing Aiven and Render services. You do not need to create another database service or API service.
 
-## 1. Create the free MySQL service
+## 1. Open the existing MySQL service
 
-1. Sign up or sign in at [Aiven](https://console.aiven.io/).
-2. Create a project if prompted, then select **Create service → MySQL**.
-3. Select the **Free** tier. Confirm the service is free before creating it. A paid service funded by trial credits is a different choice.
-4. Name the service `robustthreed-ledger` and create it. Wait until its status is **Running**.
-5. Open the service overview and **Quick connect** or its connection details. Keep the hostname, port, username, and password available privately.
-6. Download or copy the service's CA certificate from its connection/SSL information. If downloaded as `ca.pem`, open it with a text editor. You will paste the full certificate into Render.
+1. Sign in at [Aiven](https://console.aiven.io/) and open project **robustthreed-ledger → Services → robustthreed-ledger (MySQL)**.
+2. Confirm the service shows **Running**. Under **Databases**, `robustthreed_ledger` is already present.
+3. Open **Overview → Connection information**. Keep the hostname, port, username, and password available privately. The connection example may show `defaultdb`; keep Render's `DB_NAME=robustthreed_ledger` to use the ledger database.
+4. Download or copy the service's CA certificate from its connection/SSL information. If downloaded as `ca.pem`, open it with a text editor. You will paste the full certificate into Render.
 
-The cloud username is commonly `avnadmin`; use the value Aiven actually supplies. Your computer's `root` credentials are not credentials for this new cloud service. The API setup creates a database named `robustthreed_ledger` inside the service. [Aiven service setup](https://aiven.io/docs/products/mysql/get-started), [database creation](https://aiven.io/docs/products/mysql/howto/create-database).
+The cloud username is commonly `avnadmin`; use the value Aiven actually supplies. Your computer's `root` credentials are not credentials for this cloud service. The API setup will create the ledger tables inside `robustthreed_ledger` and preserve the database. [Aiven service setup](https://aiven.io/docs/products/mysql/get-started), [database creation](https://aiven.io/docs/products/mysql/howto/create-database).
+
+**Only for a fresh deployment in another account:** create a project, choose **Create service → MySQL → Free**, select a broad region and service name, and wait for **Running**. Confirm the selected plan is Free; a paid service funded by trial credits is a different choice. The API setup can create `robustthreed_ledger` automatically.
 
 ## 2. Connect the existing API to MySQL
 

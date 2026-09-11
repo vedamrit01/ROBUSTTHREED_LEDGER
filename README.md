@@ -8,6 +8,8 @@ A private daily ledger for Robustthreed's Amazon, Flipkart, Meesho, and direct s
 
 [Open the existing Render API service](https://dashboard.render.com/web/srv-dahpu83m8hqs73ctcvig). The Free service was created on 11 September 2026; database credentials and an owner login password still need to be configured before it can run. See [the remaining cloud setup steps](CLOUD_SETUP.md).
 
+The free Aiven MySQL service `robustthreed-ledger` is running, and its database `robustthreed_ledger` has been created. Continue by configuring the existing Render service; no additional database service is needed.
+
 The database setup command must run on a computer that can reach your MySQL server. `localhost` means the computer running the API. The MySQL credentials from your screenshot belong in your own server's `.env`; this repository contains placeholders.
 
 ## What the app does
