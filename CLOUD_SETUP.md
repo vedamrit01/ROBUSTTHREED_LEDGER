@@ -16,16 +16,16 @@ For business-critical availability, use paid hosting and independently verified 
 
 ## Deployment status on 11 September 2026
 
+- **The website is live: [Open Robustthreed Ledger](https://vedamrit01.github.io/ROBUSTTHREED_LEDGER/).** GitHub Pages build and deployment both succeeded.
 - The **Free** API service has been created in the **Robustthreed** Render workspace, in Singapore, and connected to this repository's `main` branch.
 - [Open the existing API service in Render](https://dashboard.render.com/web/srv-dahpu83m8hqs73ctcvig). Its public address is `https://robustthreed-ledger-api.onrender.com`.
 - The **Free MySQL 8.4** service `robustthreed-ledger` is running in the Aiven project of the same name. The database `robustthreed_ledger` has already been created inside it.
 - The API is **live**, with the MySQL connection, TLS certificate verification, and owner login configured in Render. Its [health check](https://robustthreed-ledger-api.onrender.com/api/health) returns `{"ok":true}`.
 - Your generated owner login password is stored in **Render → Environment → `LEDGER_PASSWORD`**. Copy it privately from there when signing in to the ledger.
-- The GitHub Pages build already uses this API address. **Only Pages publishing remains:** follow section 3 below. No repository variables are required for this deployment.
+- The GitHub Pages website uses this API address. No repository variables are required for this deployment.
+- Live API checks passed for owner login, saving to MySQL, reloading from a new session, editing, deletion, and logout. The temporary test entry was removed. The public sign-in page was also checked in a browser.
 
-Continue with the steps below using the existing Aiven and Render services. You do not need to create another database service or API service.
-
-**For the existing deployment, sections 1 and 2 are complete.** They remain below as configuration and recovery instructions.
+**All three setup sections are complete for this deployment.** Sign in at the live link above to start entering your payments and expenses. The steps below remain as configuration and recovery instructions for the existing services.
 
 ## 1. Open the existing MySQL service
 

@@ -2,13 +2,15 @@
 
 A private daily ledger for Robustthreed's Amazon, Flipkart, Meesho, and direct sales. Log marketplace payouts and business expenses, track pending amounts, and see cash profit in INR.
 
+**[Open the live Robustthreed ledger](https://vedamrit01.github.io/ROBUSTTHREED_LEDGER/)**
+
 **Frontend:** React + Vite, ready for GitHub Pages. **Backend:** Node.js + Express. **Database:** MySQL, with a new database named `robustthreed_ledger` by default.
 
 **Want to use cloud MySQL without running your computer?** Follow [CLOUD_SETUP.md](CLOUD_SETUP.md) for Aiven's free MySQL, a prepared Render API deployment, and GitHub Pages. This route lets you enter database details and choose your owner password through dashboards; no local MySQL installation is needed.
 
-[Open the existing Render API service](https://dashboard.render.com/web/srv-dahpu83m8hqs73ctcvig). The Free API is live and connected to MySQL; its [health check](https://robustthreed-ledger-api.onrender.com/api/health) is passing. Your generated owner login password is stored in **Render → Environment → `LEDGER_PASSWORD`**. See [the remaining GitHub Pages steps](CLOUD_SETUP.md#3-connect-github-pages).
+[Open the existing Render API service](https://dashboard.render.com/web/srv-dahpu83m8hqs73ctcvig). The Free API is live and connected to MySQL; its [health check](https://robustthreed-ledger-api.onrender.com/api/health) is passing. Your generated owner login password is stored in **Render → Environment → `LEDGER_PASSWORD`**. See [the setup and recovery guide](CLOUD_SETUP.md).
 
-The free Aiven MySQL service `robustthreed-ledger` is running, and its database `robustthreed_ledger` is connected to the API. Continue by enabling GitHub Pages; no additional database service is needed.
+The website is published on GitHub Pages and connected to the API. The free Aiven MySQL service `robustthreed-ledger` is running, and its database `robustthreed_ledger` stores your ledger entries. All three parts are configured.
 
 The database setup command must run on a computer that can reach your MySQL server. `localhost` means the computer running the API. The MySQL credentials from your screenshot belong in your own server's `.env`; this repository contains placeholders.
 
@@ -143,6 +145,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE
 Then update the server's `DB_USER` and `DB_PASSWORD` and restart it. For a hosted database, create an account through the provider's controls with access restricted to the API host.
 
 ## Host the interface on GitHub Pages
+
+GitHub Pages is already enabled for this deployment. These steps are for publishing again or setting up another deployment.
 
 The repository contains `.github/workflows/pages.yml`. It builds only the frontend into `dist`; the server, database, and secrets are not part of that published folder.
 
