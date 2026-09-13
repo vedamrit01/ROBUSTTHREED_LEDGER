@@ -32,6 +32,10 @@ This is a cash ledger. It does not calculate inventory valuation, depreciation, 
 
 Entries are manual: saving is automatic after you press **Save**, but this version does not import settlements from Amazon, Flipkart, or Meesho automatically. Existing records from an earlier hosted version are not automatically migrated. CSV export is for reporting, not a complete database backup.
 
+## Windows double-click setup
+
+Download and extract this repository, then run **SETUP_LEDGER.cmd** once and **START_LEDGER.cmd** each time you use the ledger. Requires Node.js 24 or newer and a running local MySQL service. The wizard privately prompts for your MySQL password and creates a separate local ledger login. See [WINDOWS_SETUP.md](WINDOWS_SETUP.md) for the steps and troubleshooting.
+
 ## Run it on your own computer
 
 Install **Node.js 24** and **MySQL 8.4**. Start your MySQL service before continuing.
