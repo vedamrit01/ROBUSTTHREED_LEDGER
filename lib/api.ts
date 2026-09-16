@@ -1,5 +1,9 @@
 // Only the API's public origin belongs in this bundle. MySQL credentials stay on the server.
-const apiOrigin = (import.meta.env.VITE_API_URL || "").trim().replace(/\/$/, "");
+import { apiConnection } from "./api-config";
+const { apiOrigin, needsApiConfiguration } = apiConnection(
+  import.meta.env.PROD, import.meta.env.VITE_API_URL || "",
+  import.meta.env.VITE_SAME_ORIGIN_API === "true",
+);
 const storageKey = "robustthreed-session";
 let token = "";
 try { token = sessionStorage.getItem(storageKey) || ""; } catch { /* In-memory sessions still work. */ }
@@ -8,7 +12,7 @@ export function setSession(value: string) {
   token = value;
   try { value ? sessionStorage.setItem(storageKey, value) : sessionStorage.removeItem(storageKey); } catch { /* Storage can be disabled. */ }
 }
-export const needsApiConfiguration = import.meta.env.PROD && !apiOrigin;
+export { needsApiConfiguration };
 export async function api<T>(path: string, options?: RequestInit): Promise<T> {
   if (needsApiConfiguration) throw new Error("The ledger server has not been connected yet. Follow the hosting steps in the project README.");
   let r: Response;

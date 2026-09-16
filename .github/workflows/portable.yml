@@ -38,12 +38,16 @@ jobs:
         env:
           VITE_BASE_PATH: /
           VITE_API_URL: ''
+          VITE_SAME_ORIGIN_API: 'true'
       - run: node portable/package.mjs
       - name: Verify bundled Windows runtime
         shell: pwsh
         run: |
           & ./portable-output/ROBUSTTHREED_PORTABLE/runtime/node.exe --input-type=module -e "import {DatabaseSync} from 'node:sqlite'; const db=new DatabaseSync(':memory:'); db.exec('CREATE TABLE check_runtime(id INTEGER)'); db.close(); console.log('Bundled SQLite runtime works');"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Install browser test tools outside the portable package
+        run: npm install --no-save --package-lock=false playwright
+      - run: npx playwright install chromium
       - run: node portable/smoke-package.mjs
       - name: Zip and publish downloadable release
         shell: pwsh

@@ -2,6 +2,10 @@
 
 Carry the ledger AND its records between Windows 10/11 x64 PCs. This edition uses SQLite stored beside the app and bundles Node.js. You do not need MySQL, Node.js installation, an internet connection after downloading, or administrator access for normal use. A managed PC may restrict running apps from removable drives.
 
+## Portable login-screen fix
+
+The initial portable-v1-1 release incorrectly displayed a GitHub Pages setup notice. Use a newer release. Close the old launcher, extract the new release separately, and copy the complete **data** folder from the old copy into the new one to preserve records and your portable password. No MySQL re-import or password reset is needed.
+
 ## Get the correct ZIP
 
 Open https://github.com/vedamrit01/ROBUSTTHREED_LEDGER/releases and download **ROBUSTTHREED_PORTABLE_WINDOWS_X64.zip** from the newest portable release. Do not choose GitHub's automatic Source code ZIP: it does not include the runtime or built interface.
