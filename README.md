@@ -32,6 +32,10 @@ This is a cash ledger. It does not calculate inventory valuation, depreciation, 
 
 Entries are manual: saving is automatic after you press **Save**, but this version does not import settlements from Amazon, Flipkart, or Meesho automatically. Existing records from an earlier hosted version are not automatically migrated. CSV export is for reporting, not a complete database backup.
 
+## Portable pendrive edition
+
+To carry the app and records between Windows PCs, download the **portable Windows release ZIP** from [Releases](https://github.com/vedamrit01/ROBUSTTHREED_LEDGER/releases). It bundles Node.js, uses a local SQLite database, and includes one-time MySQL import and backup tools. See [PORTABLE_WINDOWS.md](PORTABLE_WINDOWS.md). The source-code ZIP alone is not the portable app.
+
 ## Windows double-click setup
 
 Download and extract this repository, then run **SETUP_LEDGER.cmd** once and **START_LEDGER.cmd** each time you use the ledger. Requires Node.js 24 or newer and a running local MySQL service. The wizard privately prompts for your MySQL password and creates a separate local ledger login. See [WINDOWS_SETUP.md](WINDOWS_SETUP.md) for the steps and troubleshooting.

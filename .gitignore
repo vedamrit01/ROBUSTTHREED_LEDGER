@@ -20,3 +20,10 @@ uploads/
 .DS_Store
 .idea/
 .vscode/
+
+# Portable runtime output and private SQLite records
+portable-output/
+data/
+*.sqlite
+*.sqlite-*
+*.db

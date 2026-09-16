@@ -1,0 +1,58 @@
+name: Build portable Windows ledger
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'portable/**'
+      - 'server/**'
+      - 'lib/**'
+      - 'app/**'
+      - 'components/**'
+      - 'hooks/**'
+      - 'public/**'
+      - 'index.html'
+      - 'package*.json'
+      - 'vite.config.ts'
+      - 'tests/portable.test.mjs'
+      - 'PORTABLE_WINDOWS.md'
+      - '.github/workflows/portable.yml'
+permissions:
+  contents: write
+concurrency:
+  group: portable-windows
+  cancel-in-progress: false
+jobs:
+  package:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          architecture: x64
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+        env:
+          VITE_BASE_PATH: /
+          VITE_API_URL: ''
+      - run: node portable/package.mjs
+      - name: Verify bundled Windows runtime
+        shell: pwsh
+        run: |
+          & ./portable-output/ROBUSTTHREED_PORTABLE/runtime/node.exe --input-type=module -e "import {DatabaseSync} from 'node:sqlite'; const db=new DatabaseSync(':memory:'); db.exec('CREATE TABLE check_runtime(id INTEGER)'); db.close(); console.log('Bundled SQLite runtime works');"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - run: node portable/smoke-package.mjs
+      - name: Zip and publish downloadable release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $archive = 'ROBUSTTHREED_PORTABLE_WINDOWS_X64.zip'
+          Compress-Archive -Path portable-output/ROBUSTTHREED_PORTABLE -DestinationPath $archive
+          (Get-FileHash $archive -Algorithm SHA256).Hash.ToLower() + '  ' + $archive | Set-Content -Encoding ascii SHA256SUMS.txt
+          $tag = 'portable-v1-' + $env:GITHUB_RUN_NUMBER
+          gh release create $tag $archive SHA256SUMS.txt --target $env:GITHUB_SHA --title 'Robustthreed Portable for Windows x64' --notes-file PORTABLE_WINDOWS.md
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
